@@ -10,14 +10,22 @@ d3.json(url).then(function(data) {
   console.log(data.samples[0]);
   console.log('data.names', data.names);
   console.log(data.samples[1].sample_values);
-
+  
+});
+  function chart(sampleId){d3.json(url).then(function(data) {
+    let sampleData = data.samples
+    result = sampleData.filter(id => id.id ===sampleId)[0]
+    console.log(result);
+    let sample_values = result.sample_values
+    let otu_ids = result.otu_ids
 
    // Plotting horizontal bar chart
    let trace = {
-    x: data.samples[0].sample_values.slice(0,10),
-    y: data.names[0],
+    x: sample_values.slice(0,10).reverse(),
+    y: otu_ids.slice(0,10).map(id => `OTU ${id}`).reverse(),
     type: 'bar',
-    orientation: 'horizontal'
+    orientation: 'h'
+
    };
    // Layout for horizontal bar chart
    let layout = {
@@ -30,13 +38,13 @@ d3.json(url).then(function(data) {
 
     // Plotting bubble chart
     let trace1 = {
-      x: data.samples[0].otu_ids,
-      y: data.samples[0].sample_values,
+      x: otu_ids,
+      y: sample_values,
       type: 'scatter',
       mode: "markers",
       marker :{
-        size: data.samples[0].sample_values,
-        color: data.samples[0].otu.ids,
+        size: sample_values,
+        color: otu_ids
       }
 
     };
@@ -51,10 +59,20 @@ d3.json(url).then(function(data) {
   
     let barPlot = [trace];
     let bubblePlot= [trace1];
-    plotly.newPlot('bar', barPlot,layout)
+    Plotly.newPlot('bar', barPlot,layout);
     Plotly.newPlot("bubble", bubblePlot,layout1);
- 
+  });
+}
+  function init(){d3.json(url).then(function(data) {
+    let dropdownMenu = d3.select("#selDataset");
+    for (let j = 0; j < data.names.length; j++) {
+      dropdownMenu.append("option").text(data.names[j]).property("value", data.names[j]);
+    }
+  chart(data.names[0]);
+    
+  })}
   
-
-  
-});
+  function optionChanged(op){
+    chart(op)
+  }
+  init();
