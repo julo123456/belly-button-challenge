@@ -1,4 +1,3 @@
 # belly-button-challenge
-Module 14 Challenge using D3 JavaScript
+This task utilized D3 library to create interactive charts with drop down menus to visulize microbial species present in human bodies.
 
-The app.js file in static folder is the file used to perform tasks for this challenge.
